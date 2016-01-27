@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  </head>
+  <body>
+    <h2>Please click the <b>Choose File</b> button, and then select one of the files from the GIT project</h2>
+    <input type="file" id="fileInput" />
+
+    <br/>
+    <br/>
+    <br/>
+    <h3>INPUT:</h3>
+    <div id="input">
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <h3>OUTPUT (official format is availabel in the console):</h3>
+    <div id="output">
+    </div>
+
+    <script type="text/javascript">
+      function sortContents(contents) {
+        var list = contents.split("\n");
+        var array = [];
+
+        _.each(list, function (apartment) {
+          var string = apartment.match(/[0-9]{1,}/);
+          var index = parseInt(string);
+          if( array[index] == undefined ) {
+            array[index] = [apartment];
+          } else {
+            array[index].push( apartment );
+          }
+        });
+
+        array = _.compact(array);
+
+        var sortedArray = [];
+
+        _.each( array, function (subarray){
+          sortedArray.push(_.sortBy(subarray, function (string){ return string;}));
+        });
+
+        var answer = _.flatten(sortedArray);
+
+        document.getElementById('output').innerHTML = answer;
+        console.log('output:');
+        console.log(answer.join("\n"))
+      }
+
+      function readSingleFile(evt) {
+        var f = evt.target.files[0];
+
+        if (f) {
+          var r = new FileReader();
+          r.onload = function(e) {
+            var contents = e.target.result;
+            document.getElementById('input').innerHTML = contents;
+
+            sortContents(contents);
+          };
+
+          r.readAsText(f);
+        } else {
+          alert("Please enter a file");
+        }
+      }
+
+      document.getElementById('fileInput').addEventListener('change', readSingleFile, false);
+    </script>
+  </body>
+</html>
